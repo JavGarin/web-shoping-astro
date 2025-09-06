@@ -1,16 +1,29 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { supabase } from '../lib/supabase';
 
+// Fetch featured products from Supabase
+const { data: products, error } = await supabase
+  .from('products')
+  .select('*')
+  .eq('is_featured', true)
+  .limit(4);
+
+if (error) console.error('Error fetching products:', error.message);
 ---
-
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="TheCountryHouse - Home">
+  <section class="bg-gray-50 rounded-lg py-12">
+    <div class="text-center">
+      <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">Our Featured Collection</h2>
+      <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">Discover pieces that bring warmth and style to your home.</p>
+    </div>
+    <div class="mt-10 mx-auto max-w-7xl px-4">
+      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {products && products.map(product => (
+          <ProductCard product={product} />
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
