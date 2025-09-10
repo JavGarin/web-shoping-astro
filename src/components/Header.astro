@@ -5,13 +5,13 @@ const { user } = Astro.locals;
 const pathname = Astro.url.pathname;
 
 const navLinks = [
-  { href: "/about", text: "About" },
-  { href: "/products", text: "Products" },
-  { href: "/contact", text: "Contact" },
+  { href: "/about", text: "Nosotros" },
+  { href: "/products", text: "Productos" },
+  { href: "/contact", text: "Contacto" },
 ];
 ---
 
-<header class="relative bg-cream-beige border-b border-earth-brown/50 shadow-md">
+<header class="fixed top-0 left-0 right-0 z-50 bg-cream-beige border-b border-earth-brown/50 shadow-md transition-all duration-300">
   <div class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-24 items-center justify-between">
       <div class="flex-1 md:flex md:items-center md:gap-12">
@@ -49,14 +49,14 @@ const navLinks = [
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-                <span class="text-sm font-medium">{user.email?.split('@')[0] ?? 'My Account'}</span>
+                <span class="text-sm font-medium">{user.email?.split('@')[0] ?? 'Mi Cuenta'}</span>
               </a>
               <span class="h-6 w-px bg-earth-brown/50" aria-hidden="true"></span>
               <button id="logout-button" class="group flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                <span class="text-sm font-medium">Logout</span>
+                <span class="text-sm font-medium">Cerrar Sesión</span>
               </button>
             </>
           ) : (
@@ -64,7 +64,7 @@ const navLinks = [
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              <span class="text-sm font-medium">Account</span>
+              <span class="text-sm font-medium">Cuenta</span>
             </a>
           )}
           
@@ -74,7 +74,7 @@ const navLinks = [
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-            <span id="header-cart-count" class="text-sm font-medium">Cart (0)</span>
+            <span id="header-cart-count" class="text-sm font-medium">Carrito (0)</span>
           </a>
         </div>
 
@@ -115,19 +115,19 @@ const navLinks = [
           <div class="space-y-4">
             <a href="/profile" class="flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-              <span>{user.email ?? 'My Account'}</span>
+              <span>{user.email ?? 'Mi Cuenta'}</span>
             </a>
-            <button id="mobile-logout-button" class="w-full text-left flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">Logout</button>
+            <button id="mobile-logout-button" class="w-full text-left flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">Cerrar Sesión</button>
           </div>
         ) : (
           <div class="space-y-4">
-            <a href="/login" class="block text-charcoal-gray transition hover:text-forest-green">Login</a>
-            <a href="/register" class="block text-charcoal-gray transition hover:text-forest-green">Register</a>
+            <a href="/login" class="block text-charcoal-gray transition hover:text-forest-green">Iniciar Sesión</a>
+            <a href="/register" class="block text-charcoal-gray transition hover:text-forest-green">Registrarse</a>
           </div>
         )}
         <a href="/cart" class="mt-4 flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-          <span id="mobile-cart-count">Cart (0)</span>
+          <span id="mobile-cart-count">Carrito (0)</span>
         </a>
       </div>
     </nav>

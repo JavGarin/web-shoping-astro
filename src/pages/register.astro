@@ -15,7 +15,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
             <label for="email-address" class="sr-only">Email</label>
-            <input id="email-address" name="email" type="email" autocomplete="email" required class="relative block w-full appearance-none rounded-none rounded-t-md border border-earth-brown px-3 py-2 text-charcoal-gray placeholder-charcoal-gray/75 focus:z-10 focus:border-forest-green focus:outline-none focus:ring-forest-green sm:text-sm" placeholder="Email">
+            <input id="email-address" name="email" type="email" autocomplete="email" required class="relative block w-full appearance-none rounded-none rounded-t-md border border-earth-brown px-3 py-2 text-charcoal-gray placeholder-charcoal-gray/75 focus:z-10 focus:border-forest-green focus:outline-none focus:ring-forest-green sm:text-sm" placeholder="Correo Electrónico">
           </div>
           <div>
             <label for="password" class="sr-only">Contraseña</label>
@@ -48,52 +48,58 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  const form = document.getElementById('register-form');
-  const button = document.getElementById('register-button');
-  const buttonText = button.querySelector('.button-text');
-  const buttonSpinner = button.querySelector('.button-spinner');
+  const form = document.getElementById('register-form') as HTMLFormElement | null;
+  const button = document.getElementById('register-button') as HTMLButtonElement | null;
+  const buttonText = button?.querySelector('.button-text');
+  const buttonSpinner = button?.querySelector('.button-spinner');
   const errorMessage = document.getElementById('error-message');
   const successMessage = document.getElementById('success-message');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    errorMessage.textContent = '';
-    successMessage.textContent = '';
+  if (form && button && buttonText && buttonSpinner && errorMessage && successMessage) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMessage.textContent = '';
+      successMessage.textContent = '';
 
-    // Show loading state
-    button.disabled = true;
-    buttonText.classList.add('hidden');
-    buttonSpinner.classList.remove('hidden');
+      // Show loading state
+      button.disabled = true;
+      buttonText.classList.add('hidden');
+      buttonSpinner.classList.remove('hidden');
 
-    const formData = new FormData(form);
-    const email = formData.get('email');
-    const password = formData.get('password');
+      const formData = new FormData(form);
+      const email = formData.get('email');
+      const password = formData.get('password');
 
-    try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al registrarse.');
+        if (!response.ok) {
+          throw new Error(data.error || 'Error al registrarse.');
+        }
+        
+        successMessage.textContent = "¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.";
+        form.reset();
+
+      } catch (error) {
+        if (error instanceof Error) {
+            errorMessage.textContent = error.message;
+        } else {
+            errorMessage.textContent = 'Ocurrió un error inesperado.';
+        }
+      } finally {
+        // Hide loading state
+        button.disabled = false;
+        buttonText.classList.remove('hidden');
+        buttonSpinner.classList.add('hidden');
       }
-      
-      successMessage.textContent = "¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.";
-      form.reset();
-
-    } catch (error) {
-        errorMessage.textContent = error.message;
-    } finally {
-      // Hide loading state
-      button.disabled = false;
-      buttonText.classList.remove('hidden');
-      buttonSpinner.classList.add('hidden');
-    }
-  });
+    });
+  }
 </script>

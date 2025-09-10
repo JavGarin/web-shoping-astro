@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+header.scrolled {
+  @apply bg-cream-beige/90 backdrop-blur-sm shadow-lg;
+}
+
+#zoom-modal {
+  transition: opacity 0.3s ease-in-out;
+}
+
+#zoom-modal:not(.hidden) {
+  opacity: 1;
+}
+
+#zoom-modal.hidden {
+  opacity: 0;
+}

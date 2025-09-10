@@ -12,10 +12,10 @@ const { data: allProducts, error } = await supabase
 if (error) console.error('Error fetching products:', error.message);
 ---
 
-<Layout title="All Products - TheCountryHouse">
+<Layout title="Todos los Productos - TheCountryHouse">
   <div class="text-center">
-    <h1 class="text-4xl font-bold">All Our Products</h1>
-    <p class="mt-4 text-lg text-charcoal-gray">Browse our full collection of curated goods.</p>
+    <h1 class="text-4xl font-bold">Todos Nuestros Productos</h1>
+    <p class="mt-4 text-lg text-charcoal-gray">Explora nuestra colección completa de artículos seleccionados.</p>
   </div>
   <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     {allProducts && allProducts.map(product => (
