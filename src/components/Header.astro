@@ -1,63 +1,176 @@
-<header class="bg-white shadow-sm">
+---
+import { updateCartCount } from '../lib/cart';
+
+const { user } = Astro.locals;
+const pathname = Astro.url.pathname;
+
+const navLinks = [
+  { href: "/about", text: "About" },
+  { href: "/products", text: "Products" },
+  { href: "/contact", text: "Contact" },
+];
+---
+
+<header class="relative bg-cream-beige border-b border-earth-brown/50 shadow-md">
   <div class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-    <div class="flex h-16 items-center justify-between">
-      <div class="md:flex md:items-center md:gap-12">
-        <a class="block text-teal-600" href="/">
+    <div class="flex h-24 items-center justify-between">
+      <div class="flex-1 md:flex md:items-center md:gap-12">
+        <a class="block text-forest-green" href="/">
           <span class="sr-only">Home</span>
-          <h1 class="text-2xl font-bold">TheCountryHouse</h1>
+          <img src="/countryhousechile.png" alt="TheCountryHouse Logo" class="h-20 w-auto" />
         </a>
       </div>
 
       <div class="hidden md:block">
         <nav aria-label="Global">
-          <ul class="flex items-center gap-6 text-sm">
-            <li>
-              <a class="text-gray-500 transition hover:text-gray-500/75" href="/about"> About </a>
-            </li>
-            <li>
-              <a class="text-gray-500 transition hover:text-gray-500/75" href="/products"> Products </a>
-            </li>
-            <li>
-              <a class="text-gray-500 transition hover:text-gray-500/75" href="/contact"> Contact </a>
-            </li>
+          <ul class="flex items-center gap-8 text-md">
+            {navLinks.map(link => (
+              <li>
+                <a 
+                  class:list={[
+                    "text-charcoal-gray transition hover:text-forest-green",
+                    { "text-forest-green font-semibold": pathname === link.href }
+                  ]}
+                  href={link.href}
+                >
+                  {link.text}
+                </a>
+              </li>
+            ))}
           </ul>
         </nav>
       </div>
 
-      <div class="flex items-center gap-4">
-        <div class="sm:flex sm:gap-4">
-          <a
-            class="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow"
-            href="/login"
-          >
-            Login
-          </a>
-
-          <div class="hidden sm:flex">
-            <a
-              class="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600"
-              href="/cart"
-            >
-              Cart (0)
+      <div class="flex items-center justify-end gap-4 flex-1">
+        <div class="hidden sm:flex sm:gap-4 items-center">
+          {user ? (
+            <>
+              <a href="/profile" class="group flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span class="text-sm font-medium">{user.email?.split('@')[0] ?? 'My Account'}</span>
+              </a>
+              <span class="h-6 w-px bg-earth-brown/50" aria-hidden="true"></span>
+              <button id="logout-button" class="group flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span class="text-sm font-medium">Logout</span>
+              </button>
+            </>
+          ) : (
+            <a href="/login" class="group flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span class="text-sm font-medium">Account</span>
             </a>
-          </div>
+          )}
+          
+          <span class="h-6 w-px bg-earth-brown/50" aria-hidden="true"></span>
+
+          <a href="/cart" class="group flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span id="header-cart-count" class="text-sm font-medium">Cart (0)</span>
+          </a>
         </div>
 
         <div class="block md:hidden">
-          <button class="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
+          <button id="mobile-menu-button" class="rounded bg-earth-brown p-2 text-charcoal-gray transition hover:text-charcoal-gray/75">
+            <svg id="menu-open-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="menu-close-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-cream-beige border-t border-earth-brown/50 shadow-lg md:hidden">
+    <nav aria-label="Mobile" class="px-4 py-6">
+      <ul class="space-y-4">
+        {navLinks.map(link => (
+          <li>
+            <a 
+              class:list={[
+                "text-charcoal-gray transition hover:text-forest-green",
+                { "text-forest-green font-semibold": pathname === link.href }
+              ]}
+              href={link.href}
+            >
+              {link.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-6 pt-6 border-t border-earth-brown/50">
+        {user ? (
+          <div class="space-y-4">
+            <a href="/profile" class="flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+              <span>{user.email ?? 'My Account'}</span>
+            </a>
+            <button id="mobile-logout-button" class="w-full text-left flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">Logout</button>
+          </div>
+        ) : (
+          <div class="space-y-4">
+            <a href="/login" class="block text-charcoal-gray transition hover:text-forest-green">Login</a>
+            <a href="/register" class="block text-charcoal-gray transition hover:text-forest-green">Register</a>
+          </div>
+        )}
+        <a href="/cart" class="mt-4 flex items-center gap-2 text-charcoal-gray transition hover:text-forest-green">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+          <span id="mobile-cart-count">Cart (0)</span>
+        </a>
+      </div>
+    </nav>
+  </div>
 </header>
+
+<script>
+  import { updateCartCount } from '../lib/cart';
+
+  function handleLogout() {
+    fetch('/api/auth/logout', { method: 'POST' }).then(response => {
+      if (response.ok) {
+        window.location.href = '/';
+      } else {
+        console.error('Logout failed');
+      }
+    }).catch(error => console.error('Logout failed', error));
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    updateCartCount();
+    
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+      logoutButton.addEventListener('click', handleLogout);
+    }
+
+    const mobileLogoutButton = document.getElementById('mobile-logout-button');
+    if (mobileLogoutButton) {
+      mobileLogoutButton.addEventListener('click', handleLogout);
+    }
+
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const openIcon = document.getElementById('menu-open-icon');
+    const closeIcon = document.getElementById('menu-close-icon');
+
+    if (mobileMenuButton && mobileMenu && openIcon && closeIcon) {
+      mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        openIcon.classList.toggle('hidden');
+        closeIcon.classList.toggle('hidden');
+      });
+    }
+  });
+</script>

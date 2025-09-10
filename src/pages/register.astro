@@ -1,0 +1,99 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Registro | TheCountryHouse">
+  <div class="flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md space-y-8">
+      <div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-charcoal-gray">
+          Crea una nueva cuenta
+        </h2>
+      </div>
+      <form id="register-form" class="mt-8 space-y-6">
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label for="email-address" class="sr-only">Email</label>
+            <input id="email-address" name="email" type="email" autocomplete="email" required class="relative block w-full appearance-none rounded-none rounded-t-md border border-earth-brown px-3 py-2 text-charcoal-gray placeholder-charcoal-gray/75 focus:z-10 focus:border-forest-green focus:outline-none focus:ring-forest-green sm:text-sm" placeholder="Email">
+          </div>
+          <div>
+            <label for="password" class="sr-only">Contraseña</label>
+            <input id="password" name="password" type="password" autocomplete="new-password" required class="relative block w-full appearance-none rounded-none rounded-b-md border border-earth-brown px-3 py-2 text-charcoal-gray placeholder-charcoal-gray/75 focus:z-10 focus:border-forest-green focus:outline-none focus:ring-forest-green sm:text-sm" placeholder="Contraseña">
+          </div>
+        </div>
+
+        <div>
+          <button id="register-button" type="submit" class="group relative flex w-full justify-center rounded-md border border-transparent bg-forest-green px-4 py-2 text-sm font-medium text-cream-beige hover:bg-forest-green/90 focus:outline-none focus:ring-2 focus:ring-forest-green focus:ring-offset-2 disabled:opacity-50">
+            <span class="button-text">Registrarse</span>
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden button-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </button>
+        </div>
+      </form>
+      <div class="text-sm text-center">
+        <p class="text-charcoal-gray">
+          ¿Ya tienes una cuenta?
+          <a href="/login" class="font-medium text-forest-green hover:text-forest-green/90">
+            Inicia sesión
+          </a>
+        </p>
+      </div>
+      <div id="error-message" class="text-center text-sm text-red-600"></div>
+      <div id="success-message" class="text-center text-sm text-green-600"></div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const form = document.getElementById('register-form');
+  const button = document.getElementById('register-button');
+  const buttonText = button.querySelector('.button-text');
+  const buttonSpinner = button.querySelector('.button-spinner');
+  const errorMessage = document.getElementById('error-message');
+  const successMessage = document.getElementById('success-message');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMessage.textContent = '';
+    successMessage.textContent = '';
+
+    // Show loading state
+    button.disabled = true;
+    buttonText.classList.add('hidden');
+    buttonSpinner.classList.remove('hidden');
+
+    const formData = new FormData(form);
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al registrarse.');
+      }
+      
+      successMessage.textContent = "¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.";
+      form.reset();
+
+    } catch (error) {
+        errorMessage.textContent = error.message;
+    } finally {
+      // Hide loading state
+      button.disabled = false;
+      buttonText.classList.remove('hidden');
+      buttonSpinner.classList.add('hidden');
+    }
+  });
+</script>

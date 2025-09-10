@@ -1,0 +1,26 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+
+const { user } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect('/login');
+}
+---
+
+<Layout title="Perfil | TheCountryHouse">
+  <div class="mx-auto max-w-screen-xl px-4 py-12 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold text-charcoal-gray">Bienvenido a tu perfil</h1>
+    <p class="mt-4 text-charcoal-gray">Aquí puedes ver y editar la información de tu cuenta.</p>
+    
+    <div class="mt-8">
+      <h2 class="text-xl font-semibold text-charcoal-gray">Información de la cuenta</h2>
+      <div class="mt-4 space-y-2">
+        <p><span class="font-medium">Email:</span> {user.email}</p>
+        <p><span class="font-medium">ID de usuario:</span> {user.id}</p>
+        <p><span class="font-medium">Último inicio de sesión:</span> {user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : 'N/A'}</p>
+      </div>
+    </div>
+  </div>
+</Layout>
