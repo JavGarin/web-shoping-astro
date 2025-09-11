@@ -17,6 +17,8 @@ import Layout from '../layouts/Layout.astro';
       <div class="relative">
         <input
           type="text"
+          id="name"
+          name="name"
           class="w-full rounded-lg border-earth-brown p-4 pe-12 text-sm shadow-sm"
           placeholder="Ingresa tu nombre"
         />
@@ -28,6 +30,8 @@ import Layout from '../layouts/Layout.astro';
       <div class="relative">
         <input
           type="email"
+          id="email"
+          name="email"
           class="w-full rounded-lg border-earth-brown p-4 pe-12 text-sm shadow-sm"
           placeholder="Ingresa tu correo"
         />
@@ -38,6 +42,8 @@ import Layout from '../layouts/Layout.astro';
       <label for="message" class="sr-only">Mensaje</label>
       <div class="relative">
         <textarea
+          id="message"
+          name="message"
           class="w-full rounded-lg border-earth-brown p-4 pe-12 text-sm shadow-sm"
           placeholder="Escribe tu mensaje"
           rows="4"

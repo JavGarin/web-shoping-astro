@@ -17,6 +17,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   });
 
   if (error) {
+    console.error('Error de Supabase al iniciar sesión:', error.message);
     return new Response(JSON.stringify({ error: error.message }), { status: 401 });
   }
 
